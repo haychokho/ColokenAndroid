@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 /**
- * Created by User on 6/17/2015.
+ * Created by Choirunnisa Fatima on 6/17/2015.
  */
 public class SplashScreen extends Activity {
 
