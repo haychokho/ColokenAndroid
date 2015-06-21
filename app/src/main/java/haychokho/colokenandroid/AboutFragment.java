@@ -7,9 +7,28 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 
 public class AboutFragment extends Fragment {
+    private static final String ARG_PAGE = "page";
+    private String mPage;
+
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param param Parameter .
+     * @return A new instance of fragment AboutFragment.
+     */
+    // TODO: Rename and change types and number of parameters
+    public static AboutFragment newInstance(String param) {
+        AboutFragment fragment = new AboutFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_PAGE, param);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     public AboutFragment() {
         // Required empty public constructor
@@ -18,6 +37,9 @@ public class AboutFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mPage = getArguments().getString(ARG_PAGE);
+        }
     }
 
     @Override
@@ -37,4 +59,26 @@ public class AboutFragment extends Fragment {
         super.onDetach();
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        Bundle args = getArguments();
+        if (args != null) {
+            updatePageView(args.getString(ARG_PAGE));
+        }
+    }
+
+    private void updatePageView(String page) {
+        TextView pageView = (TextView) getActivity().findViewById(R.id.pageView);
+        if (page.equals("about")) {
+            pageView.setText(R.string.about_string);
+        } else if (page.equals("help")) {
+            pageView.setText(R.string.help_string);
+        } else {
+            pageView.setText(R.string.page_not_available);
+        }
+
+        mPage = page;
+    }
 }
