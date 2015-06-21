@@ -129,7 +129,7 @@ public class TerminalDetail extends FragmentActivity {
         @Override
         public CharSequence getPageTitle(int position) {
             SpannableStringBuilder sb = new SpannableStringBuilder("socket");
-            Drawable myDrawable = mContext.getResources().getDrawable( R.drawable.socket_senyum );
+            Drawable myDrawable = mContext.getResources().getDrawable( R.drawable.ic_socket_smile );
             myDrawable.setBounds(0, 0, myDrawable.getIntrinsicWidth(), myDrawable.getIntrinsicHeight());
             ImageSpan span = new ImageSpan(myDrawable, ImageSpan.ALIGN_BASELINE);
             sb.setSpan(span, 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);

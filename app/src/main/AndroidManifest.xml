@@ -4,7 +4,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/socket_senyum"
+        android:icon="@drawable/ic_socket_smile"
         android:label="@string/app_name" >
         <activity
             android:name=".SplashScreen"
