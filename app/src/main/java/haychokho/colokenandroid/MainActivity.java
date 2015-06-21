@@ -1,44 +1,66 @@
 package haychokho.colokenandroid;
 
+
+import java.util.Locale;
+
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.SearchManager;
+import android.content.Intent;
 import android.content.res.Configuration;
-import android.content.res.TypedArray;
-import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
-import java.util.ArrayList;
-
-import haychokho.colokenandroid.adapter.NavDrawerListAdapter;
-import haychokho.colokenandroid.model.NavDrawerItem;
-
-
-public class MainActivity extends ActionBarActivity {
-
+/**
+ * This example illustrates a common usage of the DrawerLayout widget
+ * in the Android support library.
+ * <p/>
+ * <p>When a navigation (left) drawer is present, the host activity should detect presses of
+ * the action bar's Up affordance as a signal to open and close the navigation drawer. The
+ * ActionBarDrawerToggle facilitates this behavior.
+ * Items within the drawer should fall into one of two categories:</p>
+ * <p/>
+ * <ul>
+ * <li><strong>View switches</strong>. A view switch follows the same basic policies as
+ * list or tab navigation in that a view switch does not create navigation history.
+ * This pattern should only be used at the root activity of a task, leaving some form
+ * of Up navigation active for activities further down the navigation hierarchy.</li>
+ * <li><strong>Selective Up</strong>. The drawer allows the user to choose an alternate
+ * parent for Up navigation. This allows a user to jump across an app's navigation
+ * hierarchy at will. The application should treat this as it treats Up navigation from
+ * a different task, replacing the current task stack using TaskStackBuilder or similar.
+ * This is the only form of navigation drawer that should be used outside of the root
+ * activity of a task.</li>
+ * </ul>
+ * <p/>
+ * <p>Right side drawers should be used for actions, not navigation. This follows the pattern
+ * established by the Action Bar that navigation should be to the left and actions to the right.
+ * An action should be an operation performed on the current contents of the window,
+ * for example enabling or disabling a data overlay on top of the current content.</p>
+ */
+public class MainActivity extends Activity {
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
 
-    // nav drawer title
     private CharSequence mDrawerTitle;
-
-    // used to store app title
     private CharSequence mTitle;
-
-    // slide menu items
-    private String[] navMenuTitles;
-    private TypedArray navMenuIcons;
-
-    private ArrayList<NavDrawerItem> navDrawerItems;
-    private NavDrawerListAdapter adapter;
+    private String[] mPlanetTitles;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,149 +68,116 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         mTitle = mDrawerTitle = getTitle();
-
-        // load slide menu items
-        navMenuTitles = getResources().getStringArray(R.array.nav_drawer_items);
-
-        // nav drawer icons from resources
-        navMenuIcons = getResources()
-                .obtainTypedArray(R.array.nav_drawer_icons);
-
+        mPlanetTitles = getResources().getStringArray(R.array.nav_array);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.list_slider_menu);
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
-        navDrawerItems = new ArrayList<NavDrawerItem>();
+        // set a custom shadow that overlays the main content when the drawer opens
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+        // set up the drawer's list view with items and click listener
+        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+                R.layout.drawer_list_item, mPlanetTitles));
+        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
-        // adding nav drawer items to array
-        // Home
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(0, -1)));
-        // Add Socket
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
-        // Settings
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1)));
-        // About
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1)));
+        // enable ActionBar app icon to behave as action to toggle nav drawer
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
+        getActionBar().setIcon(
+                new ColorDrawable(getResources().getColor(android.R.color.transparent)));
 
-
-        // Recycle the typed array
-        navMenuIcons.recycle();
-
-        mDrawerList.setOnItemClickListener(new SlideMenuClickListener());
-
-        // setting the nav drawer list adapter
-        adapter = new NavDrawerListAdapter(getApplicationContext(),
-                navDrawerItems);
-        mDrawerList.setAdapter(adapter);
-
-        // enabling action bar app icon and behaving it as toggle button
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
-                R.drawable.ic_drawer, //nav menu toggle icon
-                R.string.app_name, // nav drawer open - description for accessibility
-                R.string.app_name // nav drawer close - description for accessibility
-        ){
+        // ActionBarDrawerToggle ties together the the proper interactions
+        // between the sliding drawer and the action bar app icon
+        mDrawerToggle = new ActionBarDrawerToggle(
+                this,                  /* host Activity */
+                mDrawerLayout,         /* DrawerLayout object */
+                R.drawable.ic_drawer,  /* nav drawer image to replace 'Up' caret */
+                R.string.drawer_open,  /* "open drawer" description for accessibility */
+                R.string.drawer_close  /* "close drawer" description for accessibility */
+        ) {
             public void onDrawerClosed(View view) {
-                getSupportActionBar().setTitle(mTitle);
-                // calling onPrepareOptionsMenu() to show action bar icons
-                invalidateOptionsMenu();
+                getActionBar().setTitle(mTitle);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 
             public void onDrawerOpened(View drawerView) {
-                getSupportActionBar().setTitle(mDrawerTitle);
-                // calling onPrepareOptionsMenu() to hide action bar icons
-                invalidateOptionsMenu();
+                getActionBar().setTitle(mDrawerTitle);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
         if (savedInstanceState == null) {
-            // on first time display view for first nav item
-            displayView(0);
-        }
-    }
-
-    /**
-     * Slide menu item click listener
-     * */
-    private class SlideMenuClickListener implements ListView.OnItemClickListener {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position,
-                                long id) {
-            // display view for selected nav drawer item
-            displayView(position);
-        }
-    }
-
-    /**
-     * Diplaying fragment view for selected nav drawer list item
-     * */
-    private void displayView(int position) {
-        // update the main content by replacing fragments
-        Fragment fragment = null;
-        switch (position) {
-//            case 0:
-//                fragment = new HomeFragment();
-//                break;
-
-            default:
-                break;
-        }
-
-        if (fragment != null) {
-            FragmentManager fragmentManager = getFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.frame_container, fragment).commit();
-
-            // update selected item and title, then close the drawer
-            mDrawerList.setItemChecked(position, true);
-            mDrawerList.setSelection(position);
-            setTitle(navMenuTitles[position]);
-            mDrawerLayout.closeDrawer(mDrawerList);
-        } else {
-            // error in creating fragment
-            Log.e("MainActivity", "Error in creating fragment");
+            selectItem(0);
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    /* Called whenever we call invalidateOptionsMenu() */
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // If the nav drawer is open, hide action items related to the content view
+//        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+//        menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // toggle nav drawer on selecting action bar app icon/title
+        // The action bar home/up action should open or close the drawer.
+        // ActionBarDrawerToggle will take care of this.
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
-        // Handle action bar actions click
-        switch (item.getItemId()) {
-            case R.id.action_settings:
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        // Handle action buttons
+//        switch(item.getItemId()) {
+//            case R.id.action_websearch:
+//                // create intent to perform web search for this planet
+//                Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
+//                intent.putExtra(SearchManager.QUERY, getActionBar().getTitle());
+//                // catch event that there's no activity to handle intent
+//                if (intent.resolveActivity(getPackageManager()) != null) {
+//                    startActivity(intent);
+//                } else {
+//                    Toast.makeText(this, R.string.app_not_available, Toast.LENGTH_LONG).show();
+//                }
+//                return true;
+//            default:
+//                return super.onOptionsItemSelected(item);
+//        }
+        return false;
+    }
+
+    /* The click listner for ListView in the navigation drawer */
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            selectItem(position);
         }
     }
 
-    /***
-     * Called when invalidateOptionsMenu() is triggered
-     */
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        // if nav drawer is opened, hide the action items
-        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-        menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
-        return super.onPrepareOptionsMenu(menu);
+    private void selectItem(int position) {
+        // update the main content by replacing fragments
+        Fragment fragment = new AboutFragment();
+
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
+        // update selected item and title, then close the drawer
+        mDrawerList.setItemChecked(position, true);
+        setTitle(mPlanetTitles[position]);
+        mDrawerLayout.closeDrawer(mDrawerList);
     }
 
     @Override
     public void setTitle(CharSequence title) {
         mTitle = title;
-        getSupportActionBar().setTitle(mTitle);
+        getActionBar().setTitle(mTitle);
     }
 
     /**
@@ -209,5 +198,4 @@ public class MainActivity extends ActionBarActivity {
         // Pass any configuration change to the drawer toggls
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
-
 }
