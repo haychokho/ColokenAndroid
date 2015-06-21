@@ -17,25 +17,47 @@ public class DummyContent {
      * An array of sample (dummy) items.
      */
     public static List<DummyItem> TERMINAL = new ArrayList<DummyItem>();
+    public static List<AlarmItem> ALARMS = new ArrayList<AlarmItem>();
 
     /**
      * A map of sample (dummy) items, by ID.
      */
     public static Map<String, DummyItem> TERMINAL_MAP = new HashMap<String, DummyItem>();
+    public static Map<String, AlarmItem> ALARMS_MAP = new HashMap<String, AlarmItem>();
 
     static {
-        // Add 3 sample items.
         addItem(new DummyItem("1", "Ruang Keluarga"));
         addItem(new DummyItem("2", "Ruang Makan"));
         addItem(new DummyItem("3", "Ruang Tamu"));
-        addItem(new DummyItem("3", "Kamar Farrel"));
-        addItem(new DummyItem("3", "Kamar Jojo"));
-        addItem(new DummyItem("3", "Kamar Ayah-Ibu"));
+        addItem(new DummyItem("4", "Kamar Farrel"));
+        addItem(new DummyItem("5", "Kamar Jojo"));
+        addItem(new DummyItem("6", "Kamar Ayah-Ibu"));
+    }
+
+    static {
+        addItemToAlarms(new AlarmItem("1", "07:00", "08:00"));
+        addItemToAlarms(new AlarmItem("2", "09:00", "10:00"));
+        addItemToAlarms(new AlarmItem("3", "11:00", "12:00"));
+        addItemToAlarms(new AlarmItem("4", "13:00", "14:00"));
     }
 
     private static void addItem(DummyItem item) {
         TERMINAL.add(item);
         TERMINAL_MAP.put(item.id, item);
+    }
+
+    private static void addItemToAlarms(AlarmItem item) {
+        ALARMS.add(item);
+        ALARMS_MAP.put(item.id, item);
+    }
+
+    public static String[] toStringArray(List<?> list){
+        int n = list.size();
+        String[] res = new String[n];
+        for (int i=0; i<n; i++) {
+            res[i] = list.get(i).toString();
+        }
+        return res;
     }
 
     /**
@@ -53,6 +75,23 @@ public class DummyContent {
         @Override
         public String toString() {
             return content;
+        }
+    }
+
+    public static class AlarmItem {
+        public String id;
+        public String start;
+        public String end;
+
+        public AlarmItem(String id, String start, String end) {
+            this.id = id;
+            this.start = start;
+            this.end = end;
+        }
+
+        @Override
+        public String toString() {
+            return "ON at " + start + " - " + end;
         }
     }
 }

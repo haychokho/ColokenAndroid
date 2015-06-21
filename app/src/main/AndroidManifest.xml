@@ -18,12 +18,12 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:theme="@style/AppTheme" >
+            android:theme="@style/Theme.Coloken" >
         </activity>
         <activity
             android:name=".TerminalDetail"
             android:label="@string/title_activity_terminal_detail"
-            android:theme="@style/AppTheme" >
+            android:theme="@style/Theme.Coloken" >
         </activity>
     </application>
 

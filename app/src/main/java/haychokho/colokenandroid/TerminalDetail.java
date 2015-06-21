@@ -2,6 +2,7 @@ package haychokho.colokenandroid;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -22,7 +23,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
+import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
+
+import haychokho.colokenandroid.dummy.DummyContent;
 
 
 public class TerminalDetail extends FragmentActivity {
@@ -62,6 +69,8 @@ public class TerminalDetail extends FragmentActivity {
         // button will take the user one step up in the application's hierarchy.
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle(mTitle);
+        actionBar.setIcon(
+                new ColorDrawable(getResources().getColor(android.R.color.transparent)));
 
         // Set up the ViewPager, attaching the adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);
@@ -108,9 +117,6 @@ public class TerminalDetail extends FragmentActivity {
         @Override
         public Fragment getItem(int i) {
             Fragment fragment = new SocketDetailFragment();
-            Bundle args = new Bundle();
-            args.putInt(SocketDetailFragment.ARG_OBJECT, i + 1); // Our object is just an integer :-P
-            fragment.setArguments(args);
             return fragment;
         }
 
@@ -122,7 +128,7 @@ public class TerminalDetail extends FragmentActivity {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            SpannableStringBuilder sb = new SpannableStringBuilder(" Socket "+ position); // space added before text for convenience
+            SpannableStringBuilder sb = new SpannableStringBuilder("socket");
             Drawable myDrawable = mContext.getResources().getDrawable( R.drawable.socket_senyum );
             myDrawable.setBounds(0, 0, myDrawable.getIntrinsicWidth(), myDrawable.getIntrinsicHeight());
             ImageSpan span = new ImageSpan(myDrawable, ImageSpan.ALIGN_BASELINE);
@@ -138,16 +144,40 @@ public class TerminalDetail extends FragmentActivity {
      */
     public static class SocketDetailFragment extends Fragment {
 
-        public static final String ARG_OBJECT = "object";
-
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_socket_detail, container, false);
-            Bundle args = getArguments();
-            ((TextView) rootView.findViewById(android.R.id.text1)).setText(
-                    Integer.toString(args.getInt(ARG_OBJECT)));
+            ListView listView = (ListView) rootView.findViewById(R.id.listSocketAlarms);
+            String[] values = DummyContent.toStringArray(DummyContent.ALARMS);
+            listView.setAdapter(new AlarmArrayAdapter(getActivity(), values));
             return rootView;
+        }
+    }
+
+    public static class AlarmArrayAdapter extends ArrayAdapter<String> {
+        private final Context context;
+        private final String[] values;
+
+        public AlarmArrayAdapter(Context context, String[] values) {
+            super(context, R.layout.row_alarm, values);
+            this.context = context;
+            this.values = values;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            LayoutInflater inflater = (LayoutInflater) context
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View rowView = inflater.inflate(R.layout.row_alarm, parent, false);
+            TextView textView = (TextView) rowView.findViewById(R.id.textAlarm);
+            ImageView imageView = (ImageView) rowView.findViewById(R.id.imageAlarm);
+            ImageButton imageButton = (ImageButton) rowView.findViewById(R.id.buttonEditAlarm);
+            imageView.setImageResource(R.drawable.ic_action_alarms);
+            textView.setText(values[position]);
+            imageButton.setImageResource(R.drawable.ic_action_edit);
+
+            return rowView;
         }
     }
 }

@@ -58,6 +58,7 @@ import android.widget.Toast;
 public class MainActivity extends Activity
         implements AddTerminalFragment.OnFragmentInteractionListener,
         HomeFragment.OnTerminalSelectedListener {
+
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
