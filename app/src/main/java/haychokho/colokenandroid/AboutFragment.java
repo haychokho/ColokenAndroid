@@ -69,7 +69,7 @@ public class AboutFragment extends Fragment {
         }
     }
 
-    private void updatePageView(String page) {
+    public void updatePageView(String page) {
         TextView pageView = (TextView) getActivity().findViewById(R.id.pageView);
         if (page.equals("about")) {
             pageView.setText(R.string.about_string);

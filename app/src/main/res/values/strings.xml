@@ -20,5 +20,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="about_string">This is about page</string>
     <string name="help_string">This is help page</string>
+    <string name="title_activity_terminal_detail">TerminalDetail</string>
 
 </resources>
