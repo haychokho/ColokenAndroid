@@ -163,12 +163,9 @@ public class MainActivity extends Activity
     }
 
     @Override
-    public void onTerminalSelected(String id) {
-//        AboutFragment fragment = new AboutFragment();
-//        FragmentManager fragmentManager = getFragmentManager();
-//        fragmentManager.beginTransaction()
-//                .replace(R.id.content_frame, fragment).commit();
+    public void onTerminalSelected(String terminalName) {
         Intent i = new Intent(this, TerminalDetail.class);
+        i.putExtra("title", terminalName);
         startActivity(i);
     }
 

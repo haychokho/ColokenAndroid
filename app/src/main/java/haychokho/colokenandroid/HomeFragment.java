@@ -87,7 +87,7 @@ public class HomeFragment extends ListFragment {
         if (null != mListener) {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
-            mListener.onTerminalSelected(DummyContent.TERMINAL.get(position).id);
+            mListener.onTerminalSelected(DummyContent.TERMINAL.get(position).content);
         }
     }
 
@@ -103,7 +103,7 @@ public class HomeFragment extends ListFragment {
      */
     public interface OnTerminalSelectedListener {
         // TODO: Update argument type and name
-        public void onTerminalSelected(String id);
+        public void onTerminalSelected(String terminalName);
     }
 
 }

@@ -18,11 +18,12 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:theme="@android:style/Theme.Holo.Light.DarkActionBar" >
+            android:theme="@style/AppTheme" >
         </activity>
         <activity
             android:name=".TerminalDetail"
-            android:label="@string/title_activity_terminal_detail" >
+            android:label="@string/title_activity_terminal_detail"
+            android:theme="@style/AppTheme" >
         </activity>
     </application>
 

@@ -34,23 +34,26 @@ public class TerminalDetail extends FragmentActivity {
      * state in the process. This is important to conserve memory and is a best practice when
      * allowing navigation between objects in a potentially large collection.
      */
-    DemoCollectionPagerAdapter mDemoCollectionPagerAdapter;
+    TerminalDetailPagerAdapter mTerminalDetailPagerAdapter;
 
     /**
      * The {@link android.support.v4.view.ViewPager} that will display the object collection.
      */
     ViewPager mViewPager;
+    private String mTitle;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_terminal_detail);
+        Intent i = getIntent();
+        mTitle = i.getStringExtra("title");
 
         // Create an adapter that when requested, will return a fragment representing an object in
         // the collection.
         //
         // ViewPager and its adapters use support library fragments, so we must use
         // getSupportFragmentManager.
-        mDemoCollectionPagerAdapter = new DemoCollectionPagerAdapter(this, getSupportFragmentManager());
+        mTerminalDetailPagerAdapter = new TerminalDetailPagerAdapter(this, getSupportFragmentManager());
 
         // Set up action bar.
         final android.app.ActionBar actionBar = getActionBar();
@@ -58,10 +61,11 @@ public class TerminalDetail extends FragmentActivity {
         // Specify that the Home button should show an "Up" caret, indicating that touching the
         // button will take the user one step up in the application's hierarchy.
         actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle(mTitle);
 
         // Set up the ViewPager, attaching the adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);
-        mViewPager.setAdapter(mDemoCollectionPagerAdapter);
+        mViewPager.setAdapter(mTerminalDetailPagerAdapter);
     }
 
     @Override
@@ -94,18 +98,18 @@ public class TerminalDetail extends FragmentActivity {
      * A {@link android.support.v4.app.FragmentStatePagerAdapter} that returns a fragment
      * representing an object in the collection.
      */
-    public static class DemoCollectionPagerAdapter extends FragmentStatePagerAdapter {
+    public static class TerminalDetailPagerAdapter extends FragmentStatePagerAdapter {
         private Context mContext;
-        public DemoCollectionPagerAdapter(Context context, FragmentManager fm) {
+        public TerminalDetailPagerAdapter(Context context, FragmentManager fm) {
             super(fm);
             mContext = context;
         }
 
         @Override
         public Fragment getItem(int i) {
-            Fragment fragment = new DemoObjectFragment();
+            Fragment fragment = new SocketDetailFragment();
             Bundle args = new Bundle();
-            args.putInt(DemoObjectFragment.ARG_OBJECT, i + 1); // Our object is just an integer :-P
+            args.putInt(SocketDetailFragment.ARG_OBJECT, i + 1); // Our object is just an integer :-P
             fragment.setArguments(args);
             return fragment;
         }
@@ -132,7 +136,7 @@ public class TerminalDetail extends FragmentActivity {
     /**
      * A dummy fragment representing a section of the app, but that simply displays dummy text.
      */
-    public static class DemoObjectFragment extends Fragment {
+    public static class SocketDetailFragment extends Fragment {
 
         public static final String ARG_OBJECT = "object";
 
