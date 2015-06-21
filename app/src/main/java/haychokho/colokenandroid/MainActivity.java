@@ -55,7 +55,7 @@ import android.widget.Toast;
  * An action should be an operation performed on the current contents of the window,
  * for example enabling or disabling a data overlay on top of the current content.</p>
  */
-public class MainActivity extends Activity implements AddTerminalFragment.OnFragmentInteractionListener{
+public class MainActivity extends Activity implements AddTerminalFragment.OnFragmentInteractionListener, HomeFragment.OnTerminalSelectedListener {
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -160,6 +160,11 @@ public class MainActivity extends Activity implements AddTerminalFragment.OnFrag
 
     }
 
+    @Override
+    public void onTerminalSelected(String id) {
+
+    }
+
     /* The click listner for ListView in the navigation drawer */
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
@@ -172,7 +177,7 @@ public class MainActivity extends Activity implements AddTerminalFragment.OnFrag
         Fragment fragment;
         // update the main content by replacing fragments
         switch (position) {
-            case 0: fragment = new AboutFragment();
+            case 0: fragment = new HomeFragment();
                     break;
             case 1: fragment = new AddTerminalFragment();
                     break;
